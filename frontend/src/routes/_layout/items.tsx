@@ -74,6 +74,9 @@ function ItemsTable() {
               <Th>ID</Th>
               <Th>Title</Th>
               <Th>Description</Th>
+              <Th>Buy Price</Th>
+              <Th>Stock</Th>
+              <Th>Category</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -101,6 +104,27 @@ function ItemsTable() {
                     maxWidth="150px"
                   >
                     {item.description || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.price_purchase ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.price_purchase || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.stock ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.stock || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.item_category_id ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.item_category_id || "N/A"}
                   </Td>
                   <Td>
                     <ActionsMenu type={"Item"} value={item} />
