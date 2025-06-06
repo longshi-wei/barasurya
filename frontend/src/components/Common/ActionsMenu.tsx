@@ -12,7 +12,7 @@ import { FiEdit, FiTrash } from "react-icons/fi"
 import type { CustomerTypePublic, ItemCategoryPublic, ItemPublic, ItemUnitPublic, SupplierPublic, UserPublic } from "../../client"
 import EditUser from "../Admin/EditUser"
 import EditSupplier from "../Suppliers/EditSupplier"
-import EditItemCategory from "../Items/EditItemCategory"
+import EditItemCategory from "../ItemCategories/EditItemCategory"
 import EditItemUnit from "../ItemUnits/EditItemUnit"
 import EditItem from "../Items/EditItem"
 import EditCustomerType from "../Customers/EditCustomerType"
@@ -49,9 +49,9 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
         onClose={editUserModal.onClose}
       />
     ),
-    ItemCategory: (
+    Category: (
       <EditItemCategory
-        item={value as ItemCategoryPublic}
+        item_category={value as ItemCategoryPublic}
         isOpen={editUserModal.isOpen}
         onClose={editUserModal.onClose}
       />

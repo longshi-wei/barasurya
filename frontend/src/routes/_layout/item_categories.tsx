@@ -18,29 +18,29 @@ import { z } from "zod"
 import { ItemCategoriesService } from "../../client"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
-import AddItemCategory from "../../components/Items/AddItemCategory.tsx"
+import AddItemCategory from "../../components/ItemCategories/AddItemCategory.tsx"
 import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
 
-const itemsSearchSchema = z.object({
+const itemCategoriesSearchSchema = z.object({
   page: z.number().catch(1),
 })
 
 export const Route = createFileRoute("/_layout/item_categories")({
-  component: Items,
-  validateSearch: (search) => itemsSearchSchema.parse(search),
+  component: ItemCategoriess,
+  validateSearch: (search) => itemCategoriesSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
 
-function getItemsQueryOptions({ page }: { page: number }) {
+function getItemCategoriessQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
       ItemCategoriesService.readItemCategories({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
-    queryKey: ["items", { page }],
+    queryKey: ["item_categories", { page }],
   }
 }
 
-function ItemsTable() {
+function ItemCategoriessTable() {
   const queryClient = useQueryClient()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
@@ -48,20 +48,20 @@ function ItemsTable() {
     navigate({ search: (prev: {[key: string]: string}) => ({ ...prev, page }) })
 
   const {
-    data: items,
+    data: item_categories,
     isPending,
     isPlaceholderData,
   } = useQuery({
-    ...getItemsQueryOptions({ page }),
+    ...getItemCategoriessQueryOptions({ page }),
     placeholderData: (prevData) => prevData,
   })
 
-  const hasNextPage = !isPlaceholderData && items?.data.length === PER_PAGE
+  const hasNextPage = !isPlaceholderData && item_categories?.data.length === PER_PAGE
   const hasPreviousPage = page > 1
 
   useEffect(() => {
     if (hasNextPage) {
-      queryClient.prefetchQuery(getItemsQueryOptions({ page: page + 1 }))
+      queryClient.prefetchQuery(getItemCategoriessQueryOptions({ page: page + 1 }))
     }
   }, [page, queryClient, hasNextPage])
 
@@ -89,7 +89,7 @@ function ItemsTable() {
             </Tbody>
           ) : (
             <Tbody>
-              {items?.data.map((item) => (
+              {item_categories?.data.map((item) => (
                 <Tr key={item.id} opacity={isPlaceholderData ? 0.5 : 1}>
                   <Td>{item.id}</Td>
                   <Td isTruncated maxWidth="150px">
@@ -103,7 +103,7 @@ function ItemsTable() {
                     {item.description || "N/A"}
                   </Td>
                   <Td>
-                    <ActionsMenu type={"ItemCategory"} value={item} />
+                    <ActionsMenu type={"Category"} value={item} />
                   </Td>
                 </Tr>
               ))}
@@ -121,15 +121,15 @@ function ItemsTable() {
   )
 }
 
-function Items() {
+function ItemCategoriess() {
   return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
         Item Categories Management
       </Heading>
 
-      <Navbar type={"ItemCategory"} addModalAs={AddItemCategory} />
-      <ItemsTable />
+      <Navbar type={"Category"} addModalAs={AddItemCategory} />
+      <ItemCategoriessTable />
     </Container>
   )
 }

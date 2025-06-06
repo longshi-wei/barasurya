@@ -14,51 +14,65 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useEffect } from "react"
 
-import { type ApiError, type ItemCategoryCreate, ItemCategoriesService } from "../../client"
+import {
+  type ApiError,
+  type ItemCategoryPublic,
+  type ItemCategoryUpdate,
+  ItemCategoriesService,
+} from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
 
-interface AddItemCategoryProps {
+interface EditItemCategoryProps {
+  item_category: ItemCategoryPublic
   isOpen: boolean
   onClose: () => void
 }
 
-const AddItemCategory = ({ isOpen, onClose }: AddItemCategoryProps) => {
+const EditItemCategory = ({ item_category, isOpen, onClose }: EditItemCategoryProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ItemCategoryCreate>({
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<ItemCategoryUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      name: "",
-      description: "",
-    },
+    defaultValues: item_category,
   })
 
+  useEffect(() => {
+    if (isOpen) {
+      reset(item_category)
+    }
+  }, [item_category, isOpen, reset])
+
   const mutation = useMutation({
-    mutationFn: (data: ItemCategoryCreate) =>
-      ItemCategoriesService.createItemCategory({ requestBody: data }),
+    mutationFn: (data: ItemCategoryUpdate) =>
+      ItemCategoriesService.updateItemCategory({ id: item_category.id, requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "ItemCategories created successfully.", "success")
-      reset()
+      showToast("Success!", "Category updated successfully.", "success")
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err, showToast)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["item_categories"] })
     },
   })
 
-  const onSubmit: SubmitHandler<ItemCategoryCreate> = (data) => {
+  const onSubmit: SubmitHandler<ItemCategoryUpdate> = async (data) => {
     mutation.mutate(data)
+  }
+
+  const onCancel = () => {
+    reset()
+    onClose()
   }
 
   return (
@@ -71,17 +85,16 @@ const AddItemCategory = ({ isOpen, onClose }: AddItemCategoryProps) => {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Add ItemCategories</ModalHeader>
+          <ModalHeader>Edit Category</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl isRequired isInvalid={!!errors.name}>
+            <FormControl isInvalid={!!errors.name}>
               <FormLabel htmlFor="name">Name</FormLabel>
               <Input
                 id="name"
                 {...register("name", {
-                  required: "Name is required.",
+                  required: "Name is required",
                 })}
-                placeholder="Name"
                 type="text"
               />
               {errors.name && (
@@ -98,12 +111,16 @@ const AddItemCategory = ({ isOpen, onClose }: AddItemCategoryProps) => {
               />
             </FormControl>
           </ModalBody>
-
           <ModalFooter gap={3}>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+            <Button
+              variant="primary"
+              type="submit"
+              isLoading={isSubmitting}
+              isDisabled={!isDirty}
+            >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onCancel}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -111,4 +128,4 @@ const AddItemCategory = ({ isOpen, onClose }: AddItemCategoryProps) => {
   )
 }
 
-export default AddItemCategory
+export default EditItemCategory
