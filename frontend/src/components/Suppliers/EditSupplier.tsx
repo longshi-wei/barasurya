@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useEffect } from "react"
 
 import {
   type ApiError,
@@ -43,6 +44,12 @@ const EditSupplier = ({ supplier, isOpen, onClose }: EditSupplierProps) => {
     criteriaMode: "all",
     defaultValues: supplier,
   })
+
+  useEffect(() => {
+    if (isOpen) {
+      reset(supplier)
+    }
+  }, [supplier, isOpen, reset])
 
   const mutation = useMutation({
     mutationFn: (data: SupplierUpdate) =>
