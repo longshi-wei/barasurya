@@ -46,7 +46,7 @@ const AddSupplier = ({ isOpen, onClose }: AddSupplierProps) => {
     mutationFn: (data: SupplierCreate) =>
       SuppliersService.createSupplier({ requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "Suppliers created successfully.", "success")
+      showToast("Success!", "Supplier created successfully.", "success")
       reset()
       onClose()
     },
