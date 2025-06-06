@@ -14,51 +14,65 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useEffect } from "react"
 
-import { type ApiError, type ItemUnitCreate, ItemUnitsService } from "../../client"
+import {
+  type ApiError,
+  type ItemUnitPublic,
+  type ItemUnitUpdate,
+  ItemUnitsService,
+} from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
 
-interface AddItemUnitProps {
+interface EditItemUnitProps {
+  item_unit: ItemUnitPublic
   isOpen: boolean
   onClose: () => void
 }
 
-const AddItemUnit = ({ isOpen, onClose }: AddItemUnitProps) => {
+const EditItemUnit = ({ item_unit, isOpen, onClose }: EditItemUnitProps) => {
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitting },
-  } = useForm<ItemUnitCreate>({
+    formState: { isSubmitting, errors, isDirty },
+  } = useForm<ItemUnitUpdate>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: {
-      name: "",
-      description: "",
-    },
+    defaultValues: item_unit,
   })
 
+  useEffect(() => {
+    if (isOpen) {
+      reset(item_unit)
+    }
+  }, [item_unit, isOpen, reset])
+
   const mutation = useMutation({
-    mutationFn: (data: ItemUnitCreate) =>
-      ItemUnitsService.createItemUnit({ requestBody: data }),
+    mutationFn: (data: ItemUnitUpdate) =>
+      ItemUnitsService.updateItemUnit({ id: item_unit.id, requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "ItemUnits created successfully.", "success")
-      reset()
+      showToast("Success!", "Unit updated successfully.", "success")
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err, showToast)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["items"] })
+      queryClient.invalidateQueries({ queryKey: ["item_units"] })
     },
   })
 
-  const onSubmit: SubmitHandler<ItemUnitCreate> = (data) => {
+  const onSubmit: SubmitHandler<ItemUnitUpdate> = async (data) => {
     mutation.mutate(data)
+  }
+
+  const onCancel = () => {
+    reset()
+    onClose()
   }
 
   return (
@@ -71,17 +85,16 @@ const AddItemUnit = ({ isOpen, onClose }: AddItemUnitProps) => {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Add ItemUnits</ModalHeader>
+          <ModalHeader>Edit Unit</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl isRequired isInvalid={!!errors.name}>
+            <FormControl isInvalid={!!errors.name}>
               <FormLabel htmlFor="name">Name</FormLabel>
               <Input
                 id="name"
                 {...register("name", {
-                  required: "Name is required.",
+                  required: "Name is required",
                 })}
-                placeholder="Name"
                 type="text"
               />
               {errors.name && (
@@ -98,12 +111,16 @@ const AddItemUnit = ({ isOpen, onClose }: AddItemUnitProps) => {
               />
             </FormControl>
           </ModalBody>
-
           <ModalFooter gap={3}>
-            <Button variant="primary" type="submit" isLoading={isSubmitting}>
+            <Button
+              variant="primary"
+              type="submit"
+              isLoading={isSubmitting}
+              isDisabled={!isDirty}
+            >
               Save
             </Button>
-            <Button onClick={onClose}>Cancel</Button>
+            <Button onClick={onCancel}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -111,4 +128,4 @@ const AddItemUnit = ({ isOpen, onClose }: AddItemUnitProps) => {
   )
 }
 
-export default AddItemUnit
+export default EditItemUnit

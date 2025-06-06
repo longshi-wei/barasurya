@@ -18,29 +18,29 @@ import { z } from "zod"
 import { ItemUnitsService } from "../../client"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
-import AddItemUnit from "../../components/Items/AddItemUnit.tsx"
+import AddItemUnit from "../../components/ItemUnits/AddItemUnit.tsx"
 import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
 
-const itemsSearchSchema = z.object({
+const itemUnitsSearchSchema = z.object({
   page: z.number().catch(1),
 })
 
 export const Route = createFileRoute("/_layout/item_units")({
-  component: Items,
-  validateSearch: (search) => itemsSearchSchema.parse(search),
+  component: ItemUnits,
+  validateSearch: (search) => itemUnitsSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
 
-function getItemsQueryOptions({ page }: { page: number }) {
+function getItemUnitsQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
       ItemUnitsService.readItemUnits({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
-    queryKey: ["items", { page }],
+    queryKey: ["item_units", { page }],
   }
 }
 
-function ItemsTable() {
+function ItemUnitsTable() {
   const queryClient = useQueryClient()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
@@ -48,20 +48,20 @@ function ItemsTable() {
     navigate({ search: (prev: {[key: string]: string}) => ({ ...prev, page }) })
 
   const {
-    data: items,
+    data: item_units,
     isPending,
     isPlaceholderData,
   } = useQuery({
-    ...getItemsQueryOptions({ page }),
+    ...getItemUnitsQueryOptions({ page }),
     placeholderData: (prevData) => prevData,
   })
 
-  const hasNextPage = !isPlaceholderData && items?.data.length === PER_PAGE
+  const hasNextPage = !isPlaceholderData && item_units?.data.length === PER_PAGE
   const hasPreviousPage = page > 1
 
   useEffect(() => {
     if (hasNextPage) {
-      queryClient.prefetchQuery(getItemsQueryOptions({ page: page + 1 }))
+      queryClient.prefetchQuery(getItemUnitsQueryOptions({ page: page + 1 }))
     }
   }, [page, queryClient, hasNextPage])
 
@@ -89,7 +89,7 @@ function ItemsTable() {
             </Tbody>
           ) : (
             <Tbody>
-              {items?.data.map((item) => (
+              {item_units?.data.map((item) => (
                 <Tr key={item.id} opacity={isPlaceholderData ? 0.5 : 1}>
                   <Td>{item.id}</Td>
                   <Td isTruncated maxWidth="150px">
@@ -103,7 +103,7 @@ function ItemsTable() {
                     {item.description || "N/A"}
                   </Td>
                   <Td>
-                    <ActionsMenu type={"ItemUnit"} value={item} />
+                    <ActionsMenu type={"Unit"} value={item} />
                   </Td>
                 </Tr>
               ))}
@@ -121,15 +121,15 @@ function ItemsTable() {
   )
 }
 
-function Items() {
+function ItemUnits() {
   return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
         Item Units Management
       </Heading>
 
-      <Navbar type={"ItemUnit"} addModalAs={AddItemUnit} />
-      <ItemsTable />
+      <Navbar type={"Unit"} addModalAs={AddItemUnit} />
+      <ItemUnitsTable />
     </Container>
   )
 }
