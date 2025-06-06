@@ -18,7 +18,7 @@ import { z } from "zod"
 import { CustomerTypesService } from "../../client"
 import ActionsMenu from "../../components/Common/ActionsMenu"
 import Navbar from "../../components/Common/Navbar"
-import AddCustomerType from "../../components/Customers/AddCustomerType.tsx"
+import AddCustomerType from "../../components/CustomerTypes/AddCustomerType.tsx"
 import { PaginationFooter } from "../../components/Common/PaginationFooter.tsx"
 
 const customerTypesSearchSchema = z.object({
@@ -26,7 +26,7 @@ const customerTypesSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/_layout/customer_types")({
-  component: Customers,
+  component: CustomerTypes,
   validateSearch: (search) => customerTypesSearchSchema.parse(search),
 })
 
@@ -103,7 +103,7 @@ function CustomersTable() {
                     {customer.description || "N/A"}
                   </Td>
                   <Td>
-                    <ActionsMenu type={"CustomerType"} value={customer} />
+                    <ActionsMenu type={"Type"} value={customer} />
                   </Td>
                 </Tr>
               ))}
@@ -121,14 +121,14 @@ function CustomersTable() {
   )
 }
 
-function Customers() {
+function CustomerTypes() {
   return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
         Customer Types Management
       </Heading>
 
-      <Navbar type={"CustomerType"} addModalAs={AddCustomerType} />
+      <Navbar type={"Type"} addModalAs={AddCustomerType} />
       <CustomersTable />
     </Container>
   )

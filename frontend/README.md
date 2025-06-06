@@ -4,7 +4,7 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 
 ## TODO
 
-- [x] 🚚 Move item unit and item category into a new directory
+- [x] 🚚 Move item unit, item category, and customer type into a new directory
 - [x] 🐛 Fix disabled condition in save button of edit
 
 ## Frontend development

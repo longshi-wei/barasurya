@@ -45,7 +45,7 @@ const AddCustomerType = ({ isOpen, onClose }: AddCustomerTypeProps) => {
     mutationFn: (data: CustomerTypeCreate) =>
       CustomerTypesService.createCustomerType({ requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "CustomerTypes created successfully.", "success")
+      showToast("Success!", "Type created successfully.", "success")
       reset()
       onClose()
     },
@@ -71,7 +71,7 @@ const AddCustomerType = ({ isOpen, onClose }: AddCustomerTypeProps) => {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Add CustomerTypes</ModalHeader>
+          <ModalHeader>Add Type</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl isRequired isInvalid={!!errors.name}>

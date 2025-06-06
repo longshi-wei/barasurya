@@ -15,7 +15,7 @@ import EditSupplier from "../Suppliers/EditSupplier"
 import EditItemCategory from "../ItemCategories/EditItemCategory"
 import EditItemUnit from "../ItemUnits/EditItemUnit"
 import EditItem from "../Items/EditItem"
-import EditCustomerType from "../Customers/EditCustomerType"
+import EditCustomerType from "../CustomerTypes/EditCustomerType"
 import Delete from "./DeleteAlert"
 
 interface ActionsMenuProps {
@@ -63,7 +63,7 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
         onClose={editUserModal.onClose}
       />
     ),
-    CustomerType: (
+    Type: (
       <EditCustomerType
         customer_type={value as CustomerTypePublic}
         isOpen={editUserModal.isOpen}

@@ -14,6 +14,7 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { useEffect } from "react"
 
 import {
   type ApiError,
@@ -44,11 +45,17 @@ const EditCustomerType = ({ customer_type, isOpen, onClose }: EditCustomerTypePr
     defaultValues: customer_type,
   })
 
+  useEffect(() => {
+    if (isOpen) {
+      reset(customer_type)
+    }
+  }, [customer_type, isOpen, reset])
+
   const mutation = useMutation({
     mutationFn: (data: CustomerTypeUpdate) =>
       CustomerTypesService.updateCustomerType({ id: customer_type.id, requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "CustomerType updated successfully.", "success")
+      showToast("Success!", "Type updated successfully.", "success")
       onClose()
     },
     onError: (err: ApiError) => {
@@ -78,7 +85,7 @@ const EditCustomerType = ({ customer_type, isOpen, onClose }: EditCustomerTypePr
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Edit CustomerType</ModalHeader>
+          <ModalHeader>Edit Type</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
             <FormControl isInvalid={!!errors.name}>
