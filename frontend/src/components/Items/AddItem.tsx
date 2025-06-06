@@ -13,8 +13,9 @@ import {
   ModalOverlay,
   Select,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { ItemCategoriesService, ItemUnitsService } from "../../client"
 
 import { type ApiError, type ItemCreate, ItemsService } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
@@ -26,6 +27,18 @@ interface AddItemProps {
 }
 
 const AddItem = ({ isOpen, onClose }: AddItemProps) => {
+  const { data: item_categories } = useQuery({
+    queryKey: ["item_categories"],
+    queryFn: () =>
+      ItemCategoriesService.readItemCategories({ skip: 0, limit: 999 }),
+  })
+
+  const { data: item_units } = useQuery({
+    queryKey: ["item_units"],
+    queryFn: () =>
+      ItemUnitsService.readItemUnits({ skip: 0, limit: 999 }),
+  })
+
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
   const {
@@ -62,33 +75,6 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
     mutation.mutate(data)
   }
 
-  const frameworks = [
-    {
-      id: "uuid1",
-      label: "Basic Plan",
-      value: "basic",
-      description: "$9/month - Perfect for small projects",
-    },
-    {
-      id: "uuid2",
-      label: "Pro Plan",
-      value: "pro",
-      description: "$29/month - Advanced features",
-    },
-    {
-      id: "uuid3",
-      label: "Business Plan",
-      value: "business",
-      description: "$99/month - Enterprise-grade solutions",
-    },
-    {
-      id: "uuid4",
-      label: "Enterprise Plan",
-      value: "enterprise",
-      description: "Custom pricing - Tailored solutions",
-    },
-  ]
-
   return (
     <>
       <Modal
@@ -124,9 +110,9 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
                   required: "Category of item is required."
                 })}
                 placeholder="Select the category of item">
-                {frameworks.map((plan) => (
-                  <option key={plan.value} value={plan.value}>
-                    {plan.label}
+                {item_categories?.data?.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name}
                   </option>
                 ))}
               </Select>
@@ -142,15 +128,33 @@ const AddItem = ({ isOpen, onClose }: AddItemProps) => {
                   required: "Unit of item is required."
                 })}
                 placeholder="Select the unit of item">
-                {frameworks.map((plan) => (
-                  <option key={plan.value} value={plan.value}>
-                    {plan.label}
+                {item_units?.data?.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name}
                   </option>
                 ))}
               </Select>
               {errors.item_unit_id && (
                 <FormErrorMessage>{errors.item_unit_id.message}</FormErrorMessage>
               )}
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel htmlFor="price_purchase">Buy Price</FormLabel>
+              <Input
+                id="price_purchase"
+                {...register("price_purchase")}
+                placeholder="101.000"
+                type="number"
+              />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel htmlFor="stock">Stock</FormLabel>
+              <Input
+                id="stock"
+                {...register("stock")}
+                placeholder="99"
+                type="number"
+              />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel htmlFor="description">Description</FormLabel>

@@ -11,8 +11,9 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Select,
 } from "@chakra-ui/react"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
+import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
 
 import {
@@ -20,6 +21,8 @@ import {
   type ItemPublic,
   type ItemUpdate,
   ItemsService,
+  ItemCategoriesService,
+  ItemUnitsService
 } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
@@ -31,6 +34,18 @@ interface EditItemProps {
 }
 
 const EditItem = ({ item, isOpen, onClose }: EditItemProps) => {
+  const { data: item_categories } = useQuery({
+    queryKey: ["item_categories"],
+    queryFn: () =>
+      ItemCategoriesService.readItemCategories({ skip: 0, limit: 999 }),
+  })
+
+  const { data: item_units } = useQuery({
+    queryKey: ["item_units"],
+    queryFn: () =>
+      ItemUnitsService.readItemUnits({ skip: 0, limit: 999 }),
+  })
+
   const queryClient = useQueryClient()
   const showToast = useCustomToast()
   const {
@@ -93,6 +108,60 @@ const EditItem = ({ item, isOpen, onClose }: EditItemProps) => {
               {errors.title && (
                 <FormErrorMessage>{errors.title.message}</FormErrorMessage>
               )}
+            </FormControl>
+            <FormControl isRequired isInvalid={!!errors.item_category_id} mt={4}>
+              <FormLabel htmlFor="item_category_id">Category</FormLabel>
+              <Select
+                id="item_category_id"
+                {...register("item_category_id", {
+                  required: "Category of item is required."
+                })}
+                placeholder="Select the category of item">
+                {item_categories?.data?.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </option>
+                ))}
+              </Select>
+              {errors.item_category_id && (
+                <FormErrorMessage>{errors.item_category_id.message}</FormErrorMessage>
+              )}
+            </FormControl>
+            <FormControl isRequired isInvalid={!!errors.item_unit_id} mt={4}>
+              <FormLabel htmlFor="item_unit_id">Unit</FormLabel>
+              <Select
+                id="item_unit_id"
+                {...register("item_unit_id", {
+                  required: "Unit of item is required."
+                })}
+                placeholder="Select the unit of item">
+                {item_units?.data?.map((plan) => (
+                  <option key={plan.id} value={plan.id}>
+                    {plan.name}
+                  </option>
+                ))}
+              </Select>
+              {errors.item_unit_id && (
+                <FormErrorMessage>{errors.item_unit_id.message}</FormErrorMessage>
+              )}
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel htmlFor="price_purchase">Buy Price</FormLabel>
+              <Input
+                id="price_purchase"
+                {...register("price_purchase")}
+                placeholder="101.000"
+                type="number"
+              />
+            </FormControl>
+            <FormControl mt={4}>
+              <FormLabel htmlFor="stock">Stock</FormLabel>
+              <Input
+                id="stock"
+                {...register("stock")}
+                placeholder="99"
+                type="number"
+              />
             </FormControl>
             <FormControl mt={4}>
               <FormLabel htmlFor="description">Description</FormLabel>

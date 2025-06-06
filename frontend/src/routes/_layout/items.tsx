@@ -56,6 +56,11 @@ function ItemsTable() {
     placeholderData: (prevData) => prevData,
   })
 
+  // debug
+  useEffect(() => {
+    console.log("Items:", items)
+  }, [items])
+
   const hasNextPage = !isPlaceholderData && items?.data.length === PER_PAGE
   const hasPreviousPage = page > 1
 
@@ -73,10 +78,15 @@ function ItemsTable() {
             <Tr>
               <Th>ID</Th>
               <Th>Title</Th>
-              <Th>Description</Th>
-              <Th>Buy Price</Th>
-              <Th>Stock</Th>
               <Th>Category</Th>
+              <Th>Unit</Th>
+              <Th>Buy Price</Th>
+              <Th>Sell Price</Th>
+              <Th>Total Stock</Th>
+              <Th>Minimum Stock</Th>
+              <Th>Description</Th>
+              <Th>Date Created</Th>
+              <Th>Date Updated</Th>
               <Th>Actions</Th>
             </Tr>
           </Thead>
@@ -99,11 +109,18 @@ function ItemsTable() {
                     {item.title}
                   </Td>
                   <Td
-                    color={!item.description ? "ui.dim" : "inherit"}
+                    color={!item.item_category_id ? "ui.dim" : "inherit"}
                     isTruncated
                     maxWidth="150px"
                   >
-                    {item.description || "N/A"}
+                    {item.item_category_id || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.item_unit_id ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.item_unit_id || "N/A"}
                   </Td>
                   <Td
                     color={!item.price_purchase ? "ui.dim" : "inherit"}
@@ -113,6 +130,13 @@ function ItemsTable() {
                     {item.price_purchase || "N/A"}
                   </Td>
                   <Td
+                    color={!item.price_sell ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.price_sell || "N/A"}
+                  </Td>
+                  <Td
                     color={!item.stock ? "ui.dim" : "inherit"}
                     isTruncated
                     maxWidth="150px"
@@ -120,11 +144,32 @@ function ItemsTable() {
                     {item.stock || "N/A"}
                   </Td>
                   <Td
-                    color={!item.item_category_id ? "ui.dim" : "inherit"}
+                    color={!item.stock_minimum ? "ui.dim" : "inherit"}
                     isTruncated
                     maxWidth="150px"
                   >
-                    {item.item_category_id || "N/A"}
+                    {item.stock_minimum || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.description ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.description || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.date_created ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.date_created || "N/A"}
+                  </Td>
+                  <Td
+                    color={!item.date_updated ? "ui.dim" : "inherit"}
+                    isTruncated
+                    maxWidth="150px"
+                  >
+                    {item.date_updated || "N/A"}
                   </Td>
                   <Td>
                     <ActionsMenu type={"Item"} value={item} />

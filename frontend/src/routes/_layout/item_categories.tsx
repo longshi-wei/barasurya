@@ -26,13 +26,13 @@ const itemCategoriesSearchSchema = z.object({
 })
 
 export const Route = createFileRoute("/_layout/item_categories")({
-  component: ItemCategoriess,
+  component: ItemCategories,
   validateSearch: (search) => itemCategoriesSearchSchema.parse(search),
 })
 
 const PER_PAGE = 5
 
-function getItemCategoriessQueryOptions({ page }: { page: number }) {
+function getItemCategoriesQueryOptions({ page }: { page: number }) {
   return {
     queryFn: () =>
       ItemCategoriesService.readItemCategories({ skip: (page - 1) * PER_PAGE, limit: PER_PAGE }),
@@ -40,7 +40,7 @@ function getItemCategoriessQueryOptions({ page }: { page: number }) {
   }
 }
 
-function ItemCategoriessTable() {
+function ItemCategoriesTable() {
   const queryClient = useQueryClient()
   const { page } = Route.useSearch()
   const navigate = useNavigate({ from: Route.fullPath })
@@ -52,7 +52,7 @@ function ItemCategoriessTable() {
     isPending,
     isPlaceholderData,
   } = useQuery({
-    ...getItemCategoriessQueryOptions({ page }),
+    ...getItemCategoriesQueryOptions({ page }),
     placeholderData: (prevData) => prevData,
   })
 
@@ -61,7 +61,7 @@ function ItemCategoriessTable() {
 
   useEffect(() => {
     if (hasNextPage) {
-      queryClient.prefetchQuery(getItemCategoriessQueryOptions({ page: page + 1 }))
+      queryClient.prefetchQuery(getItemCategoriesQueryOptions({ page: page + 1 }))
     }
   }, [page, queryClient, hasNextPage])
 
@@ -121,7 +121,7 @@ function ItemCategoriessTable() {
   )
 }
 
-function ItemCategoriess() {
+function ItemCategories() {
   return (
     <Container maxW="full">
       <Heading size="lg" textAlign={{ base: "center", md: "left" }} pt={12}>
@@ -129,7 +129,7 @@ function ItemCategoriess() {
       </Heading>
 
       <Navbar type={"Category"} addModalAs={AddItemCategory} />
-      <ItemCategoriessTable />
+      <ItemCategoriesTable />
     </Container>
   )
 }
