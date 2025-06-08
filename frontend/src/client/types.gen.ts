@@ -116,7 +116,9 @@ export type ItemPublic = {
   id: string
   owner_id: string
   item_category_id: string
+  item_category_name: string
   item_unit_id: string
+  item_unit_name: string
   date_created: string
   date_updated: string
 }

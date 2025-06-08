@@ -109,18 +109,18 @@ function ItemsTable() {
                     {item.title}
                   </Td>
                   <Td
-                    color={!item.item_category_id ? "ui.dim" : "inherit"}
+                    color={!item.item_category_name ? "ui.dim" : "inherit"}
                     isTruncated
                     maxWidth="150px"
                   >
-                    {item.item_category_id || "N/A"}
+                    {item.item_category_name || "N/A"}
                   </Td>
                   <Td
-                    color={!item.item_unit_id ? "ui.dim" : "inherit"}
+                    color={!item.item_unit_name ? "ui.dim" : "inherit"}
                     isTruncated
                     maxWidth="150px"
                   >
-                    {item.item_unit_id || "N/A"}
+                    {item.item_unit_name || "N/A"}
                   </Td>
                   <Td
                     color={!item.price_purchase ? "ui.dim" : "inherit"}

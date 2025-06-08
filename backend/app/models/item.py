@@ -87,7 +87,9 @@ class ItemPublic(ItemBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     item_category_id: uuid.UUID
+    item_category_name: str
     item_unit_id: uuid.UUID
+    item_unit_name: str
     date_created: datetime
     date_updated: datetime
 

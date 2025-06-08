@@ -2,10 +2,21 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
-from sqlmodel import func, select, and_
+from sqlalchemy.orm import selectinload
+from sqlmodel import and_, func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Item, ItemCreate, ItemPublic, ItemsPublic, ItemUpdate, BaseModelUpdate, Message, ItemCategory, ItemUnit
+from app.models import (
+    BaseModelUpdate,
+    Item,
+    ItemCategory,
+    ItemCreate,
+    ItemPublic,
+    ItemsPublic,
+    ItemUnit,
+    ItemUpdate,
+    Message,
+)
 
 router = APIRouter(prefix="/items", tags=["items"])
 
@@ -21,7 +32,12 @@ def read_items(
     if current_user.is_superuser:
         count_statement = select(func.count()).select_from(Item)
         count = session.exec(count_statement).one()
-        statement = select(Item).offset(skip).limit(limit)
+        statement = (
+            select(Item)
+            .options(selectinload(Item.item_category), selectinload(Item.item_unit))
+            .offset(skip)
+            .limit(limit)
+        )
         items = session.exec(statement).all()
     else:
         count_statement = (
@@ -32,12 +48,23 @@ def read_items(
         count = session.exec(count_statement).one()
         statement = (
             select(Item)
+            .options(selectinload(Item.item_category), selectinload(Item.item_unit))
             .where(Item.owner_id == current_user.id)
             .offset(skip)
             .limit(limit)
         )
         items = session.exec(statement).all()
-
+    # TODO: add all other routes to include category name and unit name
+    items = [
+        ItemPublic(
+            **{
+                **item.model_dump(),
+                "item_category_name": item.item_category.name,
+                "item_unit_name": item.item_unit.name,
+            }
+        )
+        for item in items
+    ]
     return ItemsPublic(data=items, count=count)
 
 
@@ -100,7 +127,7 @@ def update_item(
             raise HTTPException(status_code=404, detail="Item unit not found")
     update_dict = item_in.model_dump(exclude_unset=True)
     update_dict.update(BaseModelUpdate().model_dump())
-    item.sqlmodel_update(update_dict)    
+    item.sqlmodel_update(update_dict)
     session.add(item)
     session.commit()
     session.refresh(item)
@@ -174,18 +201,22 @@ def read_low_stock_items(
         count_statement = (
             select(func.count())
             .select_from(Item)
-            .where(and_(
-                Item.owner_id == current_user.id,
-                Item.stock <= Item.stock_minimum,
-            ))
+            .where(
+                and_(
+                    Item.owner_id == current_user.id,
+                    Item.stock <= Item.stock_minimum,
+                )
+            )
         )
         count = session.exec(count_statement).one()
         statement = (
             select(Item)
-            .where(and_(
-                Item.owner_id == current_user.id,
-                Item.stock <= Item.stock_minimum,
-            ))
+            .where(
+                and_(
+                    Item.owner_id == current_user.id,
+                    Item.stock <= Item.stock_minimum,
+                )
+            )
             .offset(skip)
             .limit(limit)
         )
