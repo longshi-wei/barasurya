@@ -56,6 +56,7 @@ class CustomerPublic(CustomerBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     customer_type_id: uuid.UUID
+    customer_type_name: str
     date_created: datetime
     date_updated: datetime
 

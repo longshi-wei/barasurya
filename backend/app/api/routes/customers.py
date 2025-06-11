@@ -2,10 +2,20 @@ import uuid
 from typing import Any
 
 from fastapi import APIRouter, HTTPException
+from sqlalchemy.orm import selectinload
 from sqlmodel import func, select
 
 from app.api.deps import CurrentUser, SessionDep
-from app.models import Customer, CustomerCreate, CustomerPublic, CustomersPublic, CustomerUpdate, CustomerType, Message, BaseModelUpdate
+from app.models import (
+    BaseModelUpdate,
+    Customer,
+    CustomerCreate,
+    CustomerPublic,
+    CustomersPublic,
+    CustomerType,
+    CustomerUpdate,
+    Message,
+)
 
 router = APIRouter(prefix="/customers", tags=["customers"])
 
@@ -21,7 +31,12 @@ def read_customers(
     if current_user.is_superuser:
         count_statement = select(func.count()).select_from(Customer)
         count = session.exec(count_statement).one()
-        statement = select(Customer).offset(skip).limit(limit)
+        statement = (
+            select(Customer)
+            .options(selectinload(Customer.customer_type))
+            .offset(skip)
+            .limit(limit)
+        )
         customers = session.exec(statement).all()
     else:
         count_statement = (
@@ -32,12 +47,21 @@ def read_customers(
         count = session.exec(count_statement).one()
         statement = (
             select(Customer)
+            .options(selectinload(Customer.customer_type))
             .where(Customer.owner_id == current_user.id)
             .offset(skip)
             .limit(limit)
         )
         customers = session.exec(statement).all()
-
+    customers = [
+        CustomerPublic(
+            **{
+                **customer.model_dump(),
+                "customer_type_name": customer.customer_type.name,
+            }
+        )
+        for customer in customers
+    ]
     return CustomersPublic(data=customers, count=count)
 
 
@@ -64,7 +88,9 @@ def create_customer(
     customer_type = session.get(CustomerType, customer_in.customer_type_id)
     if not customer_type:
         raise HTTPException(status_code=404, detail="Customer type not found")
-    customer = Customer.model_validate(customer_in, update={"owner_id": current_user.id})
+    customer = Customer.model_validate(
+        customer_in, update={"owner_id": current_user.id}
+    )
     session.add(customer)
     session.commit()
     session.refresh(customer)
@@ -115,5 +141,6 @@ def delete_customer(
     session.delete(customer)
     session.commit()
     return Message(message="Customer deleted successfully")
+
 
 # TODO: consider to add a feature for getting low stock customers
