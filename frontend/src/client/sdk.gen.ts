@@ -4,6 +4,16 @@ import type { CancelablePromise } from "./core/CancelablePromise"
 import { OpenAPI } from "./core/OpenAPI"
 import { request as __request } from "./core/request"
 import type {
+  AccountsReadAccountsData,
+  AccountsReadAccountsResponse,
+  AccountsCreateAccountData,
+  AccountsCreateAccountResponse,
+  AccountsReadAccountData,
+  AccountsReadAccountResponse,
+  AccountsUpdateAccountData,
+  AccountsUpdateAccountResponse,
+  AccountsDeleteAccountData,
+  AccountsDeleteAccountResponse,
   CustomersReadCustomersData,
   CustomersReadCustomersResponse,
   CustomersCreateCustomerData,
@@ -127,6 +137,127 @@ import type {
   UtilsTestEmailResponse,
   UtilsHealthCheckResponse,
 } from "./types.gen"
+
+export class AccountsService {
+  /**
+   * Read Accounts
+   * Retrieve accounts.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns AccountsPublic Successful Response
+   * @throws ApiError
+   */
+  public static readAccounts(
+    data: AccountsReadAccountsData = {},
+  ): CancelablePromise<AccountsReadAccountsResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/accounts/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Account
+   * Create new account.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns AccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static createAccount(
+    data: AccountsCreateAccountData,
+  ): CancelablePromise<AccountsCreateAccountResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/accounts/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Account
+   * Get account by ID.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns AccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static readAccount(
+    data: AccountsReadAccountData,
+  ): CancelablePromise<AccountsReadAccountResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/accounts/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Account
+   * Update a account.
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns AccountPublic Successful Response
+   * @throws ApiError
+   */
+  public static updateAccount(
+    data: AccountsUpdateAccountData,
+  ): CancelablePromise<AccountsUpdateAccountResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/accounts/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Account
+   * Delete a account.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteAccount(
+    data: AccountsDeleteAccountData,
+  ): CancelablePromise<AccountsDeleteAccountResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/accounts/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
 
 export class CustomersService {
   /**
