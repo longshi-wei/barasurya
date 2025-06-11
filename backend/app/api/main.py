@@ -1,6 +1,7 @@
 from fastapi import APIRouter
 
 from app.api.routes import (
+    accounts,
     customer_types,
     customers,
     item_categories,
@@ -17,6 +18,7 @@ from app.api.routes import (
 from app.core.config import settings
 
 api_router = APIRouter()
+api_router.include_router(accounts.router)
 api_router.include_router(customer_types.router)
 api_router.include_router(customers.router)
 api_router.include_router(item_categories.router)
