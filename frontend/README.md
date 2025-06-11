@@ -7,6 +7,8 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 - [x] 🚚 Move item unit, item category, and customer type into a new directory
 - [x] 🐛 Fix disabled condition in save button of edit
 - [x] ✨ Add customer page
+- [x] ✨ Add accounts menu
+- [x] ✨ Add stores menu
 
 ## Frontend development
 
