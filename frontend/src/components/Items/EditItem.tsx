@@ -26,6 +26,7 @@ import {
 } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
+import { useEffect } from "react"
 
 interface EditItemProps {
   item: ItemPublic
@@ -58,6 +59,12 @@ const EditItem = ({ item, isOpen, onClose }: EditItemProps) => {
     criteriaMode: "all",
     defaultValues: item,
   })
+
+  useEffect(() => {
+    if (isOpen) {
+      reset(item)
+    }
+  }, [item, isOpen, reset])
 
   const mutation = useMutation({
     mutationFn: (data: ItemUpdate) =>

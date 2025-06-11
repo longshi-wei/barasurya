@@ -23,6 +23,7 @@ export type CustomerPublic = {
   id: string
   owner_id: string
   customer_type_id: string
+  customer_type_name: string
   date_created: string
   date_updated: string
 }
