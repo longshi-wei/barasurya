@@ -11,6 +11,7 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 - [x] ✨ Add stores menu
 - [x] ✨ Add purchases menu
 - [x] ✨ Add sales menu
+- [x] 🐛 Fix favicon is not displayed correctly
 
 ## Frontend development
 
