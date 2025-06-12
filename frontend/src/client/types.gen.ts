@@ -269,6 +269,41 @@ export type PurchaseUpdate = {
   store_id?: string | null
 }
 
+export type SaleCreate = {
+  date_sale: string
+  amount?: number
+  description?: string | null
+  customer_id: string
+  store_id: string
+}
+
+export type SalePublic = {
+  date_sale: string
+  amount?: number
+  description?: string | null
+  id: string
+  owner_id: string
+  customer_id: string
+  customer_name: string
+  store_id: string
+  store_name: string
+  date_created: string
+  date_updated: string
+}
+
+export type SalesPublic = {
+  data: Array<SalePublic>
+  count: number
+}
+
+export type SaleUpdate = {
+  date_sale?: string | null
+  amount?: number | null
+  description?: string | null
+  customer_id?: string | null
+  store_id?: string | null
+}
+
 export type StoreCreate = {
   name: string
   address?: string | null
@@ -697,6 +732,38 @@ export type PurchasesDeletePurchaseData = {
 }
 
 export type PurchasesDeletePurchaseResponse = Message
+
+export type SalesReadSalesData = {
+  limit?: number
+  skip?: number
+}
+
+export type SalesReadSalesResponse = SalesPublic
+
+export type SalesCreateSaleData = {
+  requestBody: SaleCreate
+}
+
+export type SalesCreateSaleResponse = SalePublic
+
+export type SalesReadSaleData = {
+  id: string
+}
+
+export type SalesReadSaleResponse = SalePublic
+
+export type SalesUpdateSaleData = {
+  id: string
+  requestBody: SaleUpdate
+}
+
+export type SalesUpdateSaleResponse = SalePublic
+
+export type SalesDeleteSaleData = {
+  id: string
+}
+
+export type SalesDeleteSaleResponse = Message
 
 export type StoresReadStoresData = {
   limit?: number

@@ -20,11 +20,12 @@ import EditCustomer from "../Customers/EditCustomer"
 import EditAccount from "../Accounts/EditAccount"
 import EditStore from "../Stores/EditStore"
 import EditPurchase from "../Purchases/EditPurchase"
+import EditSale from "../Sales/EditSale"
 import Delete from "./DeleteAlert"
 
 interface ActionsMenuProps {
   type: string
-  value: ItemCategoryPublic | ItemPublic | UserPublic | SupplierPublic | ItemUnitPublic | CustomerTypePublic | CustomerPublic | AccountPublic | PurchasePublic
+  value: ItemCategoryPublic | ItemPublic | UserPublic | SupplierPublic | ItemUnitPublic | CustomerTypePublic | CustomerPublic | AccountPublic | PurchasePublic | SalePublic
   disabled?: boolean
 }
 
@@ -95,16 +96,16 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
         onClose={editUserModal.onClose}
       />
     ),
-    Store: (
-      <EditStore
-        store={value as StorePublic}
+    Purchase: (
+      <EditPurchase
+        purchase={value as PurchasePublic}
         isOpen={editUserModal.isOpen}
         onClose={editUserModal.onClose}
       />
     ),
-    Purchase: (
-      <EditPurchase
-        purchase={value as PurchasePublic}
+    Sale: (
+      <EditSale
+        sale={value as SalePublic}
         isOpen={editUserModal.isOpen}
         onClose={editUserModal.onClose}
       />

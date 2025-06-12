@@ -15,34 +15,27 @@ import {
 } from "@chakra-ui/react"
 import { useMutation, useQueryClient, useQuery } from "@tanstack/react-query"
 import { type SubmitHandler, useForm } from "react-hook-form"
+import { StoresService, CustomersService } from "../../client"
 
-import {
-  type ApiError,
-  type PurchasePublic,
-  type PurchaseUpdate,
-  PurchasesService,
-  SuppliersService,
-} from "../../client"
+import { type ApiError, type SaleCreate, SalesService } from "../../client"
 import useCustomToast from "../../hooks/useCustomToast"
 import { handleError } from "../../utils"
-import { useEffect } from "react"
 
-interface EditPurchaseProps {
-  purchase: PurchasePublic
+interface AddSaleProps {
   isOpen: boolean
   onClose: () => void
 }
 
-const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
-  const { data: suppliers } = useQuery({
-    queryKey: ["suppliers"],
+const AddSale = ({ isOpen, onClose }: AddSaleProps) => {
+  const { data: customers } = useQuery({
+    queryKey: ["customers"],
     queryFn: () =>
-      SuppliersService.readSuppliers({ skip: 0, limit: 999 }),
+      CustomersService.readCustomers({ skip: 0, limit: 999 }),
   })
   const { data: stores } = useQuery({
     queryKey: ["stores"],
     queryFn: () =>
-      SuppliersService.readSuppliers({ skip: 0, limit: 999 }),
+      StoresService.readStores({ skip: 0, limit: 999 }),
   })
 
   const queryClient = useQueryClient()
@@ -51,41 +44,37 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
     register,
     handleSubmit,
     reset,
-    formState: { isSubmitting, errors, isDirty },
-  } = useForm<PurchaseUpdate>({
+    formState: { errors, isSubmitting },
+  } = useForm<SaleCreate>({
     mode: "onBlur",
     criteriaMode: "all",
-    defaultValues: purchase,
+    defaultValues: {
+      date_sale: "",
+      amount: 0,
+      description: "",
+      customer_id: "",
+      store_id: "",
+    },
   })
 
-  useEffect(() => {
-    if (isOpen) {
-      reset(purchase)
-    }
-  }, [purchase, isOpen, reset])
-
   const mutation = useMutation({
-    mutationFn: (data: PurchaseUpdate) =>
-      PurchasesService.updatePurchase({ id: purchase.id, requestBody: data }),
+    mutationFn: (data: SaleCreate) =>
+      SalesService.createSale({ requestBody: data }),
     onSuccess: () => {
-      showToast("Success!", "Purchase updated successfully.", "success")
+      showToast("Success!", "Sale created successfully.", "success")
+      reset()
       onClose()
     },
     onError: (err: ApiError) => {
       handleError(err, showToast)
     },
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["purchases"] })
+      queryClient.invalidateQueries({ queryKey: ["sales"] })
     },
   })
 
-  const onSubmit: SubmitHandler<PurchaseUpdate> = async (data) => {
+  const onSubmit: SubmitHandler<SaleCreate> = (data) => {
     mutation.mutate(data)
-  }
-
-  const onCancel = () => {
-    reset()
-    onClose()
   }
 
   return (
@@ -98,20 +87,21 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
       >
         <ModalOverlay />
         <ModalContent as="form" onSubmit={handleSubmit(onSubmit)}>
-          <ModalHeader>Edit Purchase</ModalHeader>
+          <ModalHeader>Add Sale</ModalHeader>
           <ModalCloseButton />
           <ModalBody pb={6}>
-            <FormControl isInvalid={!!errors.date_purchase}>
-              <FormLabel htmlFor="date_purchase">Date Purchase</FormLabel>
+            <FormControl isRequired isInvalid={!!errors.date_sale}>
+              <FormLabel htmlFor="date_sale">Date Sale</FormLabel>
               <Input
-                id="date_purchase"
-                {...register("date_purchase", {
-                  required: "Name is required",
-                })}
+                id="date_sale"
                 type="date"
+                placeholder="Select date sale"
+                {...register("date_sale", {
+                  required: "Date sale is required.",
+                })}
               />
-              {errors.date_purchase && (
-                <FormErrorMessage>{errors.date_purchase.message}</FormErrorMessage>
+              {errors.date_sale && (
+                <FormErrorMessage>{errors.date_sale.message}</FormErrorMessage>
               )}
             </FormControl>
             <FormControl mt={4}>
@@ -132,22 +122,22 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
                 type="text"
               />
             </FormControl>
-            <FormControl isRequired isInvalid={!!errors.supplier_id} mt={4}>
-              <FormLabel htmlFor="supplier_id">Supplier</FormLabel>
+            <FormControl isRequired isInvalid={!!errors.customer_id} mt={4}>
+              <FormLabel htmlFor="customer_id">Customer</FormLabel>
               <Select
-                id="supplier_id"
-                {...register("supplier_id", {
-                  required: "Supplier of purchase is required."
+                id="customer_id"
+                {...register("customer_id", {
+                  required: "Customer of sale is required."
                 })}
-                placeholder="Select the supplier">
-                {suppliers?.data?.map((plan) => (
+                placeholder="Select the customer">
+                {customers?.data?.map((plan) => (
                   <option key={plan.id} value={plan.id}>
                     {plan.name}
                   </option>
                 ))}
               </Select>
-              {errors.supplier_id && (
-                <FormErrorMessage>{errors.supplier_id.message}</FormErrorMessage>
+              {errors.customer_id && (
+                <FormErrorMessage>{errors.customer_id.message}</FormErrorMessage>
               )}
             </FormControl>
             <FormControl isRequired isInvalid={!!errors.store_id} mt={4}>
@@ -155,7 +145,7 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
               <Select
                 id="store_id"
                 {...register("store_id", {
-                  required: "Store of purchase is required."
+                  required: "Store of sale is required."
                 })}
                 placeholder="Select the store">
                 {stores?.data?.map((plan) => (
@@ -169,16 +159,12 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
               )}
             </FormControl>
           </ModalBody>
+
           <ModalFooter gap={3}>
-            <Button
-              variant="primary"
-              type="submit"
-              isLoading={isSubmitting}
-              isDisabled={!isDirty}
-            >
+            <Button variant="primary" type="submit" isLoading={isSubmitting}>
               Save
             </Button>
-            <Button onClick={onCancel}>Cancel</Button>
+            <Button onClick={onClose}>Cancel</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
@@ -186,4 +172,4 @@ const EditPurchase = ({ purchase, isOpen, onClose }: EditPurchaseProps) => {
   )
 }
 
-export default EditPurchase
+export default AddSale

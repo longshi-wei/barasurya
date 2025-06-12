@@ -103,6 +103,16 @@ import type {
   PurchasesUpdatePurchaseResponse,
   PurchasesDeletePurchaseData,
   PurchasesDeletePurchaseResponse,
+  SalesReadSalesData,
+  SalesReadSalesResponse,
+  SalesCreateSaleData,
+  SalesCreateSaleResponse,
+  SalesReadSaleData,
+  SalesReadSaleResponse,
+  SalesUpdateSaleData,
+  SalesUpdateSaleResponse,
+  SalesDeleteSaleData,
+  SalesDeleteSaleResponse,
   StoresReadStoresData,
   StoresReadStoresResponse,
   StoresCreateStoreData,
@@ -1333,6 +1343,127 @@ export class PurchasesService {
     return __request(OpenAPI, {
       method: "DELETE",
       url: "/api/v1/purchases/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class SalesService {
+  /**
+   * Read Sales
+   * Retrieve sale types.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns SalesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readSales(
+    data: SalesReadSalesData = {},
+  ): CancelablePromise<SalesReadSalesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sales/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Sale
+   * Create new sale type.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns SalePublic Successful Response
+   * @throws ApiError
+   */
+  public static createSale(
+    data: SalesCreateSaleData,
+  ): CancelablePromise<SalesCreateSaleResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/sales/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Sale
+   * Get sale type by ID.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns SalePublic Successful Response
+   * @throws ApiError
+   */
+  public static readSale(
+    data: SalesReadSaleData,
+  ): CancelablePromise<SalesReadSaleResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/sales/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Sale
+   * Update a sale.
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns SalePublic Successful Response
+   * @throws ApiError
+   */
+  public static updateSale(
+    data: SalesUpdateSaleData,
+  ): CancelablePromise<SalesUpdateSaleResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/sales/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Sale
+   * Delete a sale.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deleteSale(
+    data: SalesDeleteSaleData,
+  ): CancelablePromise<SalesDeleteSaleResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/sales/{id}",
       path: {
         id: data.id,
       },

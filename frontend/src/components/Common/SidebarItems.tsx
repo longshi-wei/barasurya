@@ -1,7 +1,7 @@
 import { Box, Flex, Icon, Text, useColorModeValue } from "@chakra-ui/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { Link } from "@tanstack/react-router"
-import { FiBox, FiPercent, FiBriefcase, FiHome, FiSettings, FiUsers, FiUser, FiSmile, FiCreditCard, FiShoppingBag, FiShoppingCart } from "react-icons/fi"
+import { FiBox, FiPercent, FiBriefcase, FiHome, FiSettings, FiUsers, FiUser, FiSmile, FiCreditCard, FiShoppingBag, FiShoppingCart, FiTruck } from "react-icons/fi"
 
 import type { UserPublic } from "../../client"
 
@@ -16,6 +16,7 @@ const items = [
   { icon: FiBox, title: "Item Categories", path: "/item_categories" },
   { icon: FiPercent, title: "Item Units", path: "/item_units" },
   { icon: FiShoppingCart, title: "Purchases", path: "/purchases" },
+  { icon: FiTruck, title: "Sales", path: "/sales" },
   { icon: FiSettings, title: "User Settings", path: "/settings" },
 ]
 
