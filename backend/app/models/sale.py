@@ -23,12 +23,15 @@ class SaleBase(BaseModel):
 
 
 class SaleCreate(SaleBase):
-    pass
+    customer_id: uuid.UUID
+    store_id: uuid.UUID
 
 
 class SaleUpdate(SaleBase):
     date_sale: datetime | None = Field(default=0)  # type: ignore
     amount: float | None = Field(default=0, ge=0)  # type: ignore
+    customer_id: uuid.UUID | None = Field(default=None)  # type: ignore
+    store_id: uuid.UUID | None = Field(default=None)  # type: ignore
 
 
 class Sale(SaleBase, table=True):
@@ -63,7 +66,9 @@ class SalePublic(SaleBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     customer_id: uuid.UUID
+    customer_name: str
     store_id: uuid.UUID
+    store_name: str
     date_created: datetime
     date_updated: datetime
 

@@ -11,6 +11,7 @@ from app.api.routes import (
     permissions,
     private,
     purchases,
+    sales,
     stores,
     suppliers,
     users,
@@ -28,6 +29,7 @@ api_router.include_router(items.router)
 api_router.include_router(login.router)
 api_router.include_router(permissions.router)
 api_router.include_router(purchases.router)
+api_router.include_router(sales.router)
 api_router.include_router(stores.router)
 api_router.include_router(suppliers.router)
 api_router.include_router(users.router)
