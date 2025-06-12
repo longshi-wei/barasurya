@@ -93,6 +93,16 @@ import type {
   PermissionsCreatePermissionResponse,
   PrivateCreateUserData,
   PrivateCreateUserResponse,
+  PurchasesReadPurchasesData,
+  PurchasesReadPurchasesResponse,
+  PurchasesCreatePurchaseData,
+  PurchasesCreatePurchaseResponse,
+  PurchasesReadPurchaseData,
+  PurchasesReadPurchaseResponse,
+  PurchasesUpdatePurchaseData,
+  PurchasesUpdatePurchaseResponse,
+  PurchasesDeletePurchaseData,
+  PurchasesDeletePurchaseResponse,
   StoresReadStoresData,
   StoresReadStoresResponse,
   StoresCreateStoreData,
@@ -1205,6 +1215,127 @@ export class PrivateService {
       url: "/api/v1/private/users/",
       body: data.requestBody,
       mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+}
+
+export class PurchasesService {
+  /**
+   * Read Purchases
+   * Retrieve purchase types.
+   * @param data The data for the request.
+   * @param data.skip
+   * @param data.limit
+   * @returns PurchasesPublic Successful Response
+   * @throws ApiError
+   */
+  public static readPurchases(
+    data: PurchasesReadPurchasesData = {},
+  ): CancelablePromise<PurchasesReadPurchasesResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/purchases/",
+      query: {
+        skip: data.skip,
+        limit: data.limit,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Create Purchase
+   * Create new purchase type.
+   * @param data The data for the request.
+   * @param data.requestBody
+   * @returns PurchasePublic Successful Response
+   * @throws ApiError
+   */
+  public static createPurchase(
+    data: PurchasesCreatePurchaseData,
+  ): CancelablePromise<PurchasesCreatePurchaseResponse> {
+    return __request(OpenAPI, {
+      method: "POST",
+      url: "/api/v1/purchases/",
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Read Purchase
+   * Get purchase type by ID.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns PurchasePublic Successful Response
+   * @throws ApiError
+   */
+  public static readPurchase(
+    data: PurchasesReadPurchaseData,
+  ): CancelablePromise<PurchasesReadPurchaseResponse> {
+    return __request(OpenAPI, {
+      method: "GET",
+      url: "/api/v1/purchases/{id}",
+      path: {
+        id: data.id,
+      },
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Update Purchase
+   * Update a purchase.
+   * @param data The data for the request.
+   * @param data.id
+   * @param data.requestBody
+   * @returns PurchasePublic Successful Response
+   * @throws ApiError
+   */
+  public static updatePurchase(
+    data: PurchasesUpdatePurchaseData,
+  ): CancelablePromise<PurchasesUpdatePurchaseResponse> {
+    return __request(OpenAPI, {
+      method: "PUT",
+      url: "/api/v1/purchases/{id}",
+      path: {
+        id: data.id,
+      },
+      body: data.requestBody,
+      mediaType: "application/json",
+      errors: {
+        422: "Validation Error",
+      },
+    })
+  }
+
+  /**
+   * Delete Purchase
+   * Delete a purchase.
+   * @param data The data for the request.
+   * @param data.id
+   * @returns Message Successful Response
+   * @throws ApiError
+   */
+  public static deletePurchase(
+    data: PurchasesDeletePurchaseData,
+  ): CancelablePromise<PurchasesDeletePurchaseResponse> {
+    return __request(OpenAPI, {
+      method: "DELETE",
+      url: "/api/v1/purchases/{id}",
+      path: {
+        id: data.id,
+      },
       errors: {
         422: "Validation Error",
       },

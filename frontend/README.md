@@ -9,6 +9,7 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 - [x] ✨ Add customer page
 - [x] ✨ Add accounts menu
 - [x] ✨ Add stores menu
+- [x] ✨ Add purchases menu
 
 ## Frontend development
 

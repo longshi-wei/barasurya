@@ -234,6 +234,41 @@ export type PrivateUserCreate = {
   is_verified?: boolean
 }
 
+export type PurchaseCreate = {
+  date_purchase: string
+  amount?: number
+  description?: string | null
+  supplier_id: string
+  store_id: string
+}
+
+export type PurchasePublic = {
+  date_purchase: string
+  amount?: number
+  description?: string | null
+  id: string
+  owner_id: string
+  supplier_id: string
+  supplier_name: string
+  store_id: string
+  store_name: string
+  date_created: string
+  date_updated: string
+}
+
+export type PurchasesPublic = {
+  data: Array<PurchasePublic>
+  count: number
+}
+
+export type PurchaseUpdate = {
+  date_purchase?: string | null
+  amount?: number | null
+  description?: string | null
+  supplier_id?: string | null
+  store_id?: string | null
+}
+
 export type StoreCreate = {
   name: string
   address?: string | null
@@ -630,6 +665,38 @@ export type PrivateCreateUserData = {
 }
 
 export type PrivateCreateUserResponse = UserPublic
+
+export type PurchasesReadPurchasesData = {
+  limit?: number
+  skip?: number
+}
+
+export type PurchasesReadPurchasesResponse = PurchasesPublic
+
+export type PurchasesCreatePurchaseData = {
+  requestBody: PurchaseCreate
+}
+
+export type PurchasesCreatePurchaseResponse = PurchasePublic
+
+export type PurchasesReadPurchaseData = {
+  id: string
+}
+
+export type PurchasesReadPurchaseResponse = PurchasePublic
+
+export type PurchasesUpdatePurchaseData = {
+  id: string
+  requestBody: PurchaseUpdate
+}
+
+export type PurchasesUpdatePurchaseResponse = PurchasePublic
+
+export type PurchasesDeletePurchaseData = {
+  id: string
+}
+
+export type PurchasesDeletePurchaseResponse = Message
 
 export type StoresReadStoresData = {
   limit?: number
