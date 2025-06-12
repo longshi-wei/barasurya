@@ -4,6 +4,7 @@
 
 - [x] ✨ Add customer type name on customer read items api
 - [x] ✨ Add accounts api
+- [x] ✨ Add a helper to handle public scheme
 - [ ] 🎨 Add separation of concerns by splitting models (database) and schemas (api contract)
 - [ ] 🎨 Consider to include `crud`, `services`, and `schemas` inside an api directory
 - [ ] 🎨 Consider to add generic/base utility on `interface`, `repository`, and `service`

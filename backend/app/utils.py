@@ -1,13 +1,16 @@
 import logging
+from collections.abc import Callable
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, TypeVar
 
 import emails
 import jwt
 from jinja2 import Template
 from jwt.exceptions import InvalidTokenError
+from pydantic import BaseModel
+from sqlmodel import SQLModel
 
 from app.core import security
 from app.core.config import settings
@@ -126,3 +129,33 @@ def verify_password_reset_token(token: str) -> str | None:
 # a helper function to generate a datetime in utc
 def utcnow() -> datetime:
     return datetime.now(timezone.utc)
+
+
+T = TypeVar("T", bound=SQLModel)
+R = TypeVar("R", bound=BaseModel)
+
+
+def to_public(
+    obj_or_list: T | list[T],
+    *,
+    schema: Callable[..., R] = None,
+    extra_fields: dict[str, Callable[[T], Any]],
+) -> R | list[R]:
+    """
+    Convert model instance(s) to public schema with extra computed fields.
+
+    Parameters:
+    - obj_or_list: single model or list of models (e.g., Purchase)
+    - schema: Pydantic schema to map to (e.g., PurchasePublic)
+    - extra_fields: dict of {field_name: lambda obj -> value}
+    """
+
+    def convert(obj: T) -> R:
+        base_data = obj.model_dump()
+        extras = {key: func(obj) for key, func in extra_fields.items()}
+        return schema(**{**base_data, **extras})
+
+    if isinstance(obj_or_list, list):
+        return [convert(obj) for obj in obj_or_list]
+    else:
+        return convert(obj_or_list)
