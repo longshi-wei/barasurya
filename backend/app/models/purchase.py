@@ -23,12 +23,15 @@ class PurchaseBase(BaseModel):
 
 
 class PurchaseCreate(PurchaseBase):
-    pass
+    supplier_id: uuid.UUID
+    store_id: uuid.UUID
 
 
 class PurchaseUpdate(PurchaseBase):
     date_purchase: datetime | None = Field(default=0)  # type: ignore
     amount: float | None = Field(default=0, ge=0)  # type: ignore
+    supplier_id: uuid.UUID | None = Field(default=None)  # type: ignore
+    store_id: uuid.UUID | None = Field(default=None)  # type: ignore
 
 
 class Purchase(PurchaseBase, table=True):
@@ -63,7 +66,9 @@ class PurchasePublic(PurchaseBase):
     id: uuid.UUID
     owner_id: uuid.UUID
     supplier_id: uuid.UUID
+    supplier_name: str
     store_id: uuid.UUID
+    store_name: str
     date_created: datetime
     date_updated: datetime
 
