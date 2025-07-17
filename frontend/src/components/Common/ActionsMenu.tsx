@@ -9,7 +9,7 @@ import {
 import { BsThreeDotsVertical } from "react-icons/bs"
 import { FiEdit, FiTrash } from "react-icons/fi"
 
-import type { AccountPublic, CustomerPublic, CustomerTypePublic, ItemCategoryPublic, ItemPublic, ItemUnitPublic, SupplierPublic, UserPublic, PurchasePublic, StorePublic } from "../../client"
+import type { AccountPublic, CustomerPublic, CustomerTypePublic, ItemCategoryPublic, ItemPublic, ItemUnitPublic, SupplierPublic, UserPublic, PurchasePublic, StorePublic, SalePublic } from "../../client"
 import EditUser from "../Admin/EditUser"
 import EditSupplier from "../Suppliers/EditSupplier"
 import EditItemCategory from "../ItemCategories/EditItemCategory"
@@ -112,6 +112,13 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
     ),
   } as const;
 
+  type ComponentKey = keyof typeof componentMap;
+
+  function isValidComponentKey(key: string): key is ComponentKey {
+    return key in componentMap;
+  }
+
+
   return (
     <>
       <Menu>
@@ -136,7 +143,7 @@ const ActionsMenu = ({ type, value, disabled }: ActionsMenuProps) => {
             Delete {type}
           </MenuItem>
         </MenuList>
-        {componentMap[type] ?? null}
+        {isValidComponentKey(type) ? componentMap[type] : null}
         <Delete
           type={type}
           id={value.id}
