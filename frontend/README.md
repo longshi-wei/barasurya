@@ -12,6 +12,8 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 - [x] ✨ Add purchases menu
 - [x] ✨ Add sales menu
 - [x] 🐛 Fix favicon is not displayed correctly
+- [x] 🚨 Fix balance default value into integer
+- [ ] 🏗️ Update to ChakraUI-v3
 
 ## Frontend development
 

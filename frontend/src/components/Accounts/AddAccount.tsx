@@ -37,7 +37,7 @@ const AddAccount = ({ isOpen, onClose }: AddAccountProps) => {
     criteriaMode: "all",
     defaultValues: {
       name: "",
-      balance: "",
+      balance: 0,
       description: "",
     },
   })
