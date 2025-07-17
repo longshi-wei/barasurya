@@ -15,6 +15,7 @@ The frontend is built with [Vite](https://vitejs.dev/), [React](https://reactjs.
 - [x] 🚨 Fix balance default value into integer
 - [x] 🚨 Fix component key for actions menu
 - [x] ✏️ Fix address form typo
+- [x] 🍱 Update barasurya logo
 - [ ] 🏗️ Update to ChakraUI-v3
 
 ## Frontend development
