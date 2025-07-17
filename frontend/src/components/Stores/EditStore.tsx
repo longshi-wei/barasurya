@@ -120,11 +120,11 @@ const EditStore = ({ store, isOpen, onClose }: EditStoreProps) => {
               />
             </FormControl>
             <FormControl mt={4}>
-              <FormLabel htmlFor="description">Description</FormLabel>
+              <FormLabel htmlFor="address">Address</FormLabel>
               <Input
-                id="description"
-                {...register("description")}
-                placeholder="Description"
+                id="address"
+                {...register("address")}
+                placeholder="Address"
                 type="text"
               />
             </FormControl>
